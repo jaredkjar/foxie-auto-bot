@@ -41,4 +41,4 @@ Build and run the production server:
 
 You need to access the root (localhost:4141 for local development) to login and obtain a token
 
-    http:localhost:4141/
+    http://localhost:4141/
