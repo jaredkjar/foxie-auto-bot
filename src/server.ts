@@ -4,15 +4,17 @@ import path from 'path';
 
 dotenv.config();
 
-const { WATCHED_CHANNEL, STATE, REDIRECT_URL, CLIENT_ID, CLIENT_SECRET, TWITCH_ACCESS_CODE } = process.env;
+const { WATCHED_CHANNEL, STATE, REDIRECT_URL, CLIENT_ID, CLIENT_SECRET } = process.env;
 
 if (!WATCHED_CHANNEL) throw new Error('WATCHED_CHANNEL required');
+if (!STATE) throw new Error('STATE required');
+if (!REDIRECT_URL) throw new Error('REDIRECT_URL required');
+if (!CLIENT_ID) throw new Error('CLIENT_ID required');
+if (!CLIENT_SECRET) throw new Error('CLIENT_SECRET required');
 
 const port = process.env.PORT || 4141;
 
 const authBaseURL = `https://id.twitch.tv/oauth2`;
-
-import { AuthenticationFailure } from './services/helpers';
 
 const app = Express();
 
@@ -73,13 +75,4 @@ app.get('/test', async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
-  // if (TWITCH_ACCESS_CODE) {
-  //   try {
-  //     initBot({ code: TWITCH_ACCESS_CODE, channel: WATCHED_CHANNEL });
-  //   } catch (err) {
-  //     if(err instanceof AuthenticationFailure){
-  //       console.log(err.message)
-  //     }
-  //   }
-  // }
 });

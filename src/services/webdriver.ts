@@ -38,7 +38,7 @@ export default class ChromeWebDriver {
       console.log('new window')
       await this.initDriver();
     }
-    this.seleniumDriver.get(`https://hopollo.github.io/OBS-Youtube-Player/?watch?v=${watchId}&volume=50&w=800&h=600&hideWhenStopped=true`);
+    this.seleniumDriver.get(`https://hopollo.github.io/OBS-Youtube-Player/?watch?v=${watchId}&volume=35&w=800&h=600&hideWhenStopped=true`);
     this.clickVideo();
   }
 
