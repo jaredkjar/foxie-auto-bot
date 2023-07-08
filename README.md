@@ -2,7 +2,7 @@
 
 - [Development](#development)
 - [Deployment](#deployment)
-- [Authentication](#authentciation)
+- [Authentication](#authentication)
 
 
 ## Development
@@ -41,4 +41,4 @@ Build and run the production server:
 
 You need to access the root (localhost:4141 for local development) to login and obtain a token
 
-    npm start
+    http:localhost:4141/
