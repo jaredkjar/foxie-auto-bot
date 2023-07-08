@@ -2,7 +2,7 @@ import * as tmi from 'tmi.js';
 
 import ChromeWebDriver from '../services/webdriver';
 
-import { getVideoId, getNumberWithOrdinal } from '../services/helpers';
+import { getVideoId, getNumberWithOrdinal, AuthenticationFailure } from '../services/helpers';
 
 interface BotInterface {
   code: string;
@@ -18,7 +18,9 @@ export const initBot = ({ code, channel }: BotInterface) => {
         password: `oauth:${code}`,
       },
     });
-    client.connect();
+    client.connect().catch(() => {
+      console.log('Unable to authenticate. Please obtain a new oAuth token by going to /');
+    });
 
     const driver = new ChromeWebDriver();
 
@@ -29,19 +31,17 @@ export const initBot = ({ code, channel }: BotInterface) => {
         if (tags?.['first-msg']) {
           client.say(channel, `Welcome to the chat, @${user}!`);
         }
-        if(message.includes('!skip')){
-          if(isAdmin){
+        if (message.includes('!skip')) {
+          if (isAdmin) {
             driver.skip();
-          }
-          else {
+          } else {
             client.say(channel, `@${user}, only moderators can use that.`);
           }
         }
-        if(message.includes('!clear')){
-          if(isAdmin){
+        if (message.includes('!clear')) {
+          if (isAdmin) {
             driver.clear();
-          }
-          else {
+          } else {
             client.say(channel, `@${user}, only moderators can use that.`);
           }
         }
@@ -67,6 +67,9 @@ export const initBot = ({ code, channel }: BotInterface) => {
       }
     });
   } catch (err) {
-    console.log(err);
+    //pass up auth error to the server.ts
+    if (err instanceof AuthenticationFailure) {
+      throw err;
+    }
   }
 };

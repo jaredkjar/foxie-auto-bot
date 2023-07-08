@@ -6,10 +6,11 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "start": "npm run build && node dist/server.js",
+    "start": "npm run build && npm run copy-files && node dist/server.js",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "copy-files": "cp ./src/html/ -r ./dist/"
   },
   "author": "",
   "license": "ISC",
