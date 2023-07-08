@@ -1,4 +1,4 @@
-# Node.js TypeScript bootstrapping
+# Foxie Auto Bot built using NodeJS, Express, Typescript and TMI.JS!
 
 - [Development](#development)
 - [Deployment](#deployment)
@@ -6,7 +6,7 @@
 
 ## Development
 
-Use the right version of Node with [NVM](https://github.com/nvm-sh/nvm):
+Use the right version of Node with [NVM](https://github.com/nvm-sh/nvm): (anything above node v14)
 
     nvm use
 
