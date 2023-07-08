@@ -9,3 +9,10 @@ export function getNumberWithOrdinal(n: number): string {
     v = n % 100;
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
+
+export class AuthenticationFailure extends Error {
+  constructor(message: string, ...args: []) {
+    super(message, ...args);
+    this.message = message;
+  }
+}

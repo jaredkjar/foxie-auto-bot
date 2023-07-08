@@ -8,6 +8,7 @@ declare global {
         CLIENT_SECRET: string;
         REDIRECT_URL: string;
         STATE: string;
+        TWITCH_ACCESS_CODE?: string;
       }
     }
   }

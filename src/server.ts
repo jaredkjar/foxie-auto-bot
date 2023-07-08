@@ -1,9 +1,10 @@
 import Express from 'express';
 import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config();
 
-const { WATCHED_CHANNEL, STATE, REDIRECT_URL, CLIENT_ID, CLIENT_SECRET } = process.env;
+const { WATCHED_CHANNEL, STATE, REDIRECT_URL, CLIENT_ID, CLIENT_SECRET, TWITCH_ACCESS_CODE } = process.env;
 
 if (!WATCHED_CHANNEL) throw new Error('WATCHED_CHANNEL required');
 
@@ -11,17 +12,23 @@ const port = process.env.PORT || 4141;
 
 const authBaseURL = `https://id.twitch.tv/oauth2`;
 
+import { AuthenticationFailure } from './services/helpers';
+
 const app = Express();
 
 import { initBot } from './chatbot/bot';
 
 app.get('/', async (req, res) => {
+  res.sendFile(path.join(__dirname + '/html/index.html'));
+});
+
+app.get('/authenticate', async (req, res) => {
   const parameters = new URLSearchParams({
     client_id: CLIENT_ID,
     redirect_uri: REDIRECT_URL,
     response_type: 'code',
     state: STATE,
-    scope: encodeURI('chat:edit chat:read').replace('%20',' '),
+    scope: encodeURI('chat:edit chat:read').replace('%20', ' '),
   });
 
   const url = `${authBaseURL}/authorize?${parameters}`;
@@ -30,7 +37,7 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/callback', async (req, res) => {
-  const code = req?.query?.code as string || '';
+  const code = (req?.query?.code as string) || '';
 
   const qs = new URLSearchParams({
     client_id: CLIENT_ID,
@@ -48,7 +55,9 @@ app.get('/callback', async (req, res) => {
     };
     getAuthorization(url).then(data => {
       initBot({ code: data.access_token, channel: WATCHED_CHANNEL });
-      res.json({success: true});
+      console.log("Successfully obtained new oAuth token.")
+      process.env.TWITCH_ACCESS_CODE = data.access_token;
+      res.sendFile(path.join(__dirname + '/html/success.html'));
     });
   } catch (error) {
     res.json({
@@ -58,15 +67,19 @@ app.get('/callback', async (req, res) => {
   }
 });
 
-app.get('/home', async (req, res) => {
-  // const code = req?.query?.code as string || '';
-  // initBot({ code: code, channel: WATCHED_CHANNEL });
-});
-
 app.get('/test', async (req, res) => {
-  res.send('testing')
+  res.send('testing');
 });
 
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
+  // if (TWITCH_ACCESS_CODE) {
+  //   try {
+  //     initBot({ code: TWITCH_ACCESS_CODE, channel: WATCHED_CHANNEL });
+  //   } catch (err) {
+  //     if(err instanceof AuthenticationFailure){
+  //       console.log(err.message)
+  //     }
+  //   }
+  // }
 });
